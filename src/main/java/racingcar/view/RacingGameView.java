@@ -1,15 +1,23 @@
 package racingcar.view;
 
 import camp.nextstep.edu.missionutils.Console;
+import java.util.Arrays;
 import java.util.List;
 import racingcar.model.Car;
+import racingcar.validator.InputValidator;
 
 public class RacingGameView {
 
     public List<String> inputCarNames() {
         System.out.println("경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)");
         String input = Console.readLine();
-        return List.of(input.split(","));
+
+        List<String> carNames = Arrays.stream(input.split(","))
+                .map(String::trim)
+                .toList();
+
+        InputValidator.validateCarNames(carNames);
+        return carNames;
     }
 
     public Integer inputRoundCount() {
