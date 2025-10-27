@@ -1,6 +1,7 @@
 package racingcar;
 
 import java.util.List;
+import racingcar.model.Car;
 
 public class RacingGameService {
     private final RacingGameSimulator racingGameSimulator;
@@ -15,5 +16,9 @@ public class RacingGameService {
                 .toList();
 
         return racingGameSimulator.simulateRaceForRounds(roundCount, racingCars);
+    }
+
+    public List<Car> getWinners(List<Car> racingCars) {
+        return racingGameSimulator.getWinners(racingCars);
     }
 }

@@ -1,6 +1,8 @@
 package racingcar;
 
 import java.util.List;
+import racingcar.model.Car;
+import racingcar.model.CarMovementGenerator;
 
 public class RacingGameSimulator {
     private final static Integer INIT_ROUND_NUMBER = 1;
@@ -14,6 +16,12 @@ public class RacingGameSimulator {
         List<Car> cars = runRaceSimulation(roundCount, racingCars);
         determineWinners(cars);
         return cars;
+    }
+
+    public List<Car> getWinners(List<Car> cars) {
+        return cars.stream()
+                .filter(Car::isWin)
+                .toList();
     }
 
     private List<Car> runRaceSimulation(Integer roundCount, List<Car> racingCars) {
