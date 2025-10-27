@@ -21,14 +21,18 @@ public class RacingGameController {
 
             List<Car> cars = service.raceForRounds(carNames, roundCount);
 
-            for (int roundNumber = 1; roundNumber <= roundCount; roundNumber++) {
-                view.printRoundResult(cars, roundNumber);
-            }
+            printAllRounds(cars, roundCount);
 
             List<Car> winners = service.getWinners(cars);
             view.printWinners(winners);
         } catch (Exception e) {
             throw e;
+        }
+    }
+
+    private void printAllRounds(List<Car> cars, Integer roundCount) {
+        for (int roundNumber = 1; roundNumber <= roundCount; roundNumber++) {
+            view.printRoundResult(cars, roundNumber);
         }
     }
 }
