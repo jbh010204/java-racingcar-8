@@ -1,11 +1,9 @@
 package racingcar;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class RacingGameSimulator {
     private final static Integer INIT_ROUND_NUMBER = 1;
-
     public final CarMovementGenerator carMovementGenerator;
 
     public RacingGameSimulator(CarMovementGenerator carMovementGenerator) {
@@ -13,31 +11,46 @@ public class RacingGameSimulator {
     }
 
     public List<Car> simulateRaceForRounds(Integer roundCount, List<Car> racingCars) {
-        List<Car> simulatedCars = IntStream.rangeClosed(INIT_ROUND_NUMBER, roundCount)
-                .boxed()
-                .reduce(racingCars,
-                        (cars, roundNumber) -> simulateRace(roundNumber, cars),
-                        (a, b) -> b);
+        List<Car> cars = runRaceSimulation(roundCount, racingCars);
+        determineWinners(cars);
+        return cars;
+    }
 
-        Integer maxDistance = simulatedCars.stream()
-                .mapToInt(Car::getTotalDistance)
-                .max()
-                .orElse(0);
-
-        simulatedCars.stream()
-                .filter(car -> car.getTotalDistance().equals(maxDistance))
-                .forEach(Car::win);
-
-        return simulatedCars;
+    private List<Car> runRaceSimulation(Integer roundCount, List<Car> racingCars) {
+        List<Car> cars = racingCars;
+        for (int roundNumber = INIT_ROUND_NUMBER; roundNumber <= roundCount; roundNumber++) {
+            cars = simulateRace(roundNumber, cars);
+        }
+        return cars;
     }
 
     private List<Car> simulateRace(Integer roundNumber, List<Car> racingCars) {
         return racingCars.stream()
-                .map(car -> {
-                    Integer distance = carMovementGenerator.generateDistance();
-                    car.move(roundNumber, distance);
-                    return car;
-                })
+                .map(car -> moveCarInRound(car, roundNumber))
                 .toList();
+    }
+
+    private Car moveCarInRound(Car car, Integer roundNumber) {
+        Integer distance = carMovementGenerator.generateDistance();
+        car.move(roundNumber, distance);
+        return car;
+    }
+
+    private void determineWinners(List<Car> cars) {
+        Integer maxDistance = findMaxDistance(cars);
+        markWinners(cars, maxDistance);
+    }
+
+    private Integer findMaxDistance(List<Car> cars) {
+        return cars.stream()
+                .mapToInt(Car::getTotalDistance)
+                .max()
+                .orElse(0);
+    }
+
+    private void markWinners(List<Car> cars, Integer maxDistance) {
+        cars.stream()
+                .filter(car -> car.getTotalDistance().equals(maxDistance))
+                .forEach(Car::win);
     }
 }
